@@ -1,0 +1,44 @@
+use Lab2_DB;
+--Create view có tên list_pulldown_group và lấy data từ bảng mst_group
+create view list_pulldown_group AS
+SELECT * FROM mst_group;
+--Create view có tên list_pulldown_jp và lấy data từ bảng mst_japan
+create view list_pulldown_jp AS
+SELECT * FROM mst_japan;
+--5. Lấy tất cả thông tin của nhân viên trong table tbl_user có trình độ tiếng nhật là “N1”
+SELECT * FROM TBL_USER WHERE LOWER(code_level)='n1';
+--Lấy tất cả thông tin của nhân viên trong table tbl _user không có trình độ tiếng nhật.
+SELECT * FROM TBL_USER WHERE code_level is null;
+--Lấy tất cả thông tin của nhân viên trong table tbl _user có đuôi email là rikkeisoft.com
+select * from tbl_user where email like '%rikkeisoft.com';
+--Lấy tất cả thông tin của nhân viên trong table tbl _user có điện thoại bắt đầu bằng “09”.
+select * from tbl_user where tel like '09%';
+--Lấy tất cả thông tin của nhân viên trong table tbl _user được tạo trước ngày 2018-10-29
+select * from tbl_user where create_date < convert(date,'2018-10-29',102);
+--Lấy tất cả thông tin của role có nhiều user nhất.
+with tbl as (
+select ur.role_id as id,count(*) as number from 
+user_role ur 
+group by ur.role_id )
+select tbl.*,r.name as role from tbl
+left join role r on tbl.id=r.id where number in (select max(number) from tbl);
+--Lấy tất cả thông tin của role, số lượng user thuộc role đó.
+select tbl.*,r.name from (
+select ur.role_id as id,count(*) as number from 
+user_role ur 
+group by ur.role_id ) tbl
+left join role r on tbl.id=r.id;
+--Lấy tất cả thông tin của role, số lượng user thuộc role đó và có số user thuộc role &gt;= 2.
+select tbl.*,r.name from (
+select ur.role_id as id,count(*) as number from 
+user_role ur 
+group by ur.role_id ) tbl
+left join role r on tbl.id=r.id where tbl.number>=2;
+--Lấy ra thông tin tên group, số lượng user biết tiếng nhật trong group đó.
+select tbl.*,r.name from (
+select ur.role_id as id,count(*) as number from 
+user_role ur 
+left join tbl_user u on ur.user_id = u.user_id
+where u.code_level is not null
+group by ur.role_id ) tbl
+left join role r on tbl.id=r.id;

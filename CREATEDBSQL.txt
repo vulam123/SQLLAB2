@@ -1,0 +1,234 @@
+USE [master]
+GO
+/****** Object:  Database [Lab2_DB]    Script Date: 8/19/2019 9:02:11 AM ******/
+CREATE DATABASE [Lab2_DB]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'Lab2_DB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.LAM\MSSQL\DATA\Lab2_DB.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'Lab2_DB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.LAM\MSSQL\DATA\Lab2_DB_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+GO
+ALTER DATABASE [Lab2_DB] SET COMPATIBILITY_LEVEL = 140
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [Lab2_DB].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [Lab2_DB] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [Lab2_DB] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [Lab2_DB] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [Lab2_DB] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [Lab2_DB] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET RECOVERY FULL 
+GO
+ALTER DATABASE [Lab2_DB] SET  MULTI_USER 
+GO
+ALTER DATABASE [Lab2_DB] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [Lab2_DB] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [Lab2_DB] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [Lab2_DB] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [Lab2_DB] SET DELAYED_DURABILITY = DISABLED 
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'Lab2_DB', N'ON'
+GO
+ALTER DATABASE [Lab2_DB] SET QUERY_STORE = OFF
+GO
+USE [Lab2_DB]
+GO
+/****** Object:  Table [dbo].[mst_group]    Script Date: 8/19/2019 9:02:11 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[mst_group](
+	[group_id] [int] IDENTITY(1,1) NOT NULL,
+	[group_name] [nvarchar](150) NULL,
+ CONSTRAINT [PK_mst_group] PRIMARY KEY CLUSTERED 
+(
+	[group_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[list_pulldown_group]    Script Date: 8/19/2019 9:02:11 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create view [dbo].[list_pulldown_group] AS
+SELECT * FROM mst_group
+GO
+/****** Object:  Table [dbo].[mst_japan]    Script Date: 8/19/2019 9:02:11 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[mst_japan](
+	[code_level] [nvarchar](15) NOT NULL,
+	[name_level] [nvarchar](150) NULL,
+ CONSTRAINT [PK_mst_japan] PRIMARY KEY CLUSTERED 
+(
+	[code_level] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[list_pulldown_jp]    Script Date: 8/19/2019 9:02:11 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create view [dbo].[list_pulldown_jp] AS
+SELECT * FROM mst_japan
+GO
+/****** Object:  Table [dbo].[role]    Script Date: 8/19/2019 9:02:11 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[role](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[name] [nvarchar](150) NULL,
+ CONSTRAINT [PK_role] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tbl_user]    Script Date: 8/19/2019 9:02:11 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tbl_user](
+	[user_id] [int] IDENTITY(1,1) NOT NULL,
+	[group_id] [int] NOT NULL,
+	[code_level] [nvarchar](15) NULL,
+	[login_name] [nvarchar](15) NOT NULL,
+	[password] [nvarchar](60) NOT NULL,
+	[tel] [nvarchar](11) NULL,
+	[email] [nvarchar](100) NULL,
+	[full_name] [nvarchar](255) NULL,
+	[full_name_kana] [nvarchar](255) NULL,
+	[number_id] [nvarchar](11) NULL,
+	[number_range_date] [date] NULL,
+	[number_place] [nvarchar](100) NULL,
+	[national] [nvarchar](100) NULL,
+	[marital_status] [int] NULL,
+	[religion] [nvarchar](100) NULL,
+	[gender] [int] NULL,
+	[birthday] [date] NULL,
+	[passport_id] [nvarchar](11) NULL,
+	[passport_place] [nvarchar](100) NULL,
+	[passport_range_date] [date] NULL,
+	[passport_expire_date] [date] NULL,
+	[link_image] [nvarchar](255) NULL,
+	[start_date] [date] NULL,
+	[end_date] [date] NULL,
+	[total] [int] NULL,
+	[create_date] [date] NULL,
+	[del_flag] [int] NOT NULL,
+ CONSTRAINT [PK_tbl_user] PRIMARY KEY CLUSTERED 
+(
+	[user_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[user_role]    Script Date: 8/19/2019 9:02:11 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[user_role](
+	[user_id] [int] NULL,
+	[role_id] [int] NULL
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[mst_group] ON 
+
+INSERT [dbo].[mst_group] ([group_id], [group_name]) VALUES (1, N'Phòng phát tri?n s? 1')
+INSERT [dbo].[mst_group] ([group_id], [group_name]) VALUES (2, N'Phòng phát tri?n s? 2')
+INSERT [dbo].[mst_group] ([group_id], [group_name]) VALUES (3, N'Phòng phát tri?n s? 3')
+INSERT [dbo].[mst_group] ([group_id], [group_name]) VALUES (4, N'Phòng phát tri?n s? 4')
+INSERT [dbo].[mst_group] ([group_id], [group_name]) VALUES (5, N'Phòng phát tri?n s? 5')
+INSERT [dbo].[mst_group] ([group_id], [group_name]) VALUES (6, N'Phòng phát tri?n s? 6')
+INSERT [dbo].[mst_group] ([group_id], [group_name]) VALUES (7, N'Phòng phát tri?n QA')
+INSERT [dbo].[mst_group] ([group_id], [group_name]) VALUES (8, N'Phòng phát tri?n Product')
+SET IDENTITY_INSERT [dbo].[mst_group] OFF
+INSERT [dbo].[mst_japan] ([code_level], [name_level]) VALUES (N'N1', N'Trình d? ti?ng nh?t c?p 1')
+INSERT [dbo].[mst_japan] ([code_level], [name_level]) VALUES (N'N2', N'Trình d? ti?ng nh?t c?p 2')
+INSERT [dbo].[mst_japan] ([code_level], [name_level]) VALUES (N'N3', N'Trình d? ti?ng nh?t c?p 3')
+INSERT [dbo].[mst_japan] ([code_level], [name_level]) VALUES (N'N4', N'Trình d? ti?ng nh?t c?p 4')
+INSERT [dbo].[mst_japan] ([code_level], [name_level]) VALUES (N'N5', N'Trình d? ti?ng nh?t c?p 5')
+SET IDENTITY_INSERT [dbo].[role] ON 
+
+INSERT [dbo].[role] ([id], [name]) VALUES (1, N'ROLE_ADMIN')
+INSERT [dbo].[role] ([id], [name]) VALUES (2, N'ROLE_USER')
+SET IDENTITY_INSERT [dbo].[role] OFF
+SET IDENTITY_INSERT [dbo].[tbl_user] ON 
+
+INSERT [dbo].[tbl_user] ([user_id], [group_id], [code_level], [login_name], [password], [tel], [email], [full_name], [full_name_kana], [number_id], [number_range_date], [number_place], [national], [marital_status], [religion], [gender], [birthday], [passport_id], [passport_place], [passport_range_date], [passport_expire_date], [link_image], [start_date], [end_date], [total], [create_date], [del_flag]) VALUES (1, 5, NULL, N'huybq', N'123456', N'0948789456', N'huybq2@rikkeisoft.com', N'Bùi Quang Huy', NULL, N'112447010', CAST(N'2018-10-16' AS Date), N'HN', N'Kinh', 0, N'Khong', 0, CAST(N'1991-11-21' AS Date), N'ABCD123456', N'HN', CAST(N'2018-10-19' AS Date), CAST(N'2018-10-19' AS Date), NULL, NULL, NULL, NULL, NULL, 0)
+INSERT [dbo].[tbl_user] ([user_id], [group_id], [code_level], [login_name], [password], [tel], [email], [full_name], [full_name_kana], [number_id], [number_range_date], [number_place], [national], [marital_status], [religion], [gender], [birthday], [passport_id], [passport_place], [passport_range_date], [passport_expire_date], [link_image], [start_date], [end_date], [total], [create_date], [del_flag]) VALUES (2, 2, NULL, N'KCSG', N'123456', N'0919789555', N'tuandv@gmail.com', N'Duong Van Tuân Luvina', N'??', N'', NULL, N'', N'', 0, N'', 0, CAST(N'2017-10-17' AS Date), N'', N'', NULL, NULL, N'/images/1535006281257Capture.JPG', NULL, NULL, 0, NULL, 0)
+INSERT [dbo].[tbl_user] ([user_id], [group_id], [code_level], [login_name], [password], [tel], [email], [full_name], [full_name_kana], [number_id], [number_range_date], [number_place], [national], [marital_status], [religion], [gender], [birthday], [passport_id], [passport_place], [passport_range_date], [passport_expire_date], [link_image], [start_date], [end_date], [total], [create_date], [del_flag]) VALUES (3, 3, N'N5', N'huong_ka', N'123456', N'0948789999', N'huongnt@rikkeisoft.com', N'Nguyen Thi Huong A', N'??', N'', NULL, N'', N'', 0, N'', 0, CAST(N'1988-07-12' AS Date), N'', N'', NULL, NULL, NULL, CAST(N'2018-08-20' AS Date), CAST(N'2018-08-22' AS Date), 0, NULL, 0)
+SET IDENTITY_INSERT [dbo].[tbl_user] OFF
+INSERT [dbo].[user_role] ([user_id], [role_id]) VALUES (1, 1)
+INSERT [dbo].[user_role] ([user_id], [role_id]) VALUES (2, 2)
+INSERT [dbo].[user_role] ([user_id], [role_id]) VALUES (3, 2)
+ALTER TABLE [dbo].[tbl_user]  WITH CHECK ADD FOREIGN KEY([code_level])
+REFERENCES [dbo].[mst_japan] ([code_level])
+GO
+ALTER TABLE [dbo].[tbl_user]  WITH CHECK ADD FOREIGN KEY([group_id])
+REFERENCES [dbo].[mst_group] ([group_id])
+GO
+ALTER TABLE [dbo].[user_role]  WITH CHECK ADD FOREIGN KEY([role_id])
+REFERENCES [dbo].[role] ([id])
+GO
+ALTER TABLE [dbo].[user_role]  WITH CHECK ADD FOREIGN KEY([user_id])
+REFERENCES [dbo].[tbl_user] ([user_id])
+GO
+USE [master]
+GO
+ALTER DATABASE [Lab2_DB] SET  READ_WRITE 
+GO
